@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchedProducts = createAsyncThunk("fetchedProducts", async () => {
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   const response = await fetch("https://fakestoreapi.com/products");
   return await response.json();
 });
@@ -11,7 +12,6 @@ const productSlice = createSlice({
     data: [],
     status: null,
   },
-  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchedProducts.pending, (state, action) => {
       state.status = "pending";

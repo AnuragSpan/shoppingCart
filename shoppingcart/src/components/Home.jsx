@@ -1,33 +1,35 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../slices/cartSlices";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { productDetails } from "../slices/detailsSlice";
 import Footer from "./Footer";
+import NotFound from "./NotFound";
 
 const Home = () => {
   const { data, status } = useSelector((state) => state.product);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleAddToCart = (e, product) => {
     dispatch(addToCart(product));
-    navigate("/cart");
     e.stopPropagation();
   };
 
-  const handleProductDetails = (products) => {
-    return dispatch(productDetails(products));
-  };
+  // const handleProductDetails = (products) => {
+  //   dispatch(productDetails(products));
+  // };
 
   return (
     <>
       <div className="home-container">
         {status === "pending" ? (
-          <p>Loading....</p>
+          <div className="loader-container">
+            <div className="spinner"></div>
+            <p>Loading...</p>
+          </div>
         ) : status === "rejected" ? (
-          <p>An Error Occured</p>
+          <NotFound />
         ) : (
           <>
             <h2>New Arrivals</h2>
@@ -36,10 +38,7 @@ const Home = () => {
                 return (
                   <div className="product" key={product.id}>
                     <Link to={`details/${product.id}`}>
-                      <div
-                        onClick={() => handleProductDetails(product)}
-                        className="product-list"
-                      >
+                      <div className="product-list">
                         <h3>
                           {product.title.length > 20
                             ? `${product.title.slice(0, 15)}...`

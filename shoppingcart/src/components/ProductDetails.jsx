@@ -1,29 +1,49 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { productDetails } from "../slices/detailsSlice";
 
 const ProductDetails = () => {
+  const param = useParams();
+  const dispatch = useDispatch();
+
   const product = useSelector((state) => state.details);
-  console.log(product);
+
   const {
     image,
     title,
     category,
     description,
     price,
-    rating: { rate, count },
-  } = product?.initialState;
+    // rating: { rate, count },
+  } = product.itemDetails;
+
+  const fetchdetails = async () => {
+    const details = await fetch(
+      `https://fakestoreapi.com/products/${param.id}`
+    );
+    const res = await details.json();
+    dispatch(productDetails(res));
+  };
+
+  useEffect(() => {
+    fetchdetails();
+    // const response = await details.json();
+    // console.log(response);
+    // dispatch(productDetails(response));
+  }, []);
+
   return (
     <>
       <h1 className="product-title">Product Details</h1>
       <div className="product-details">
-        <img src={image} alt={product.title} />
+        <img src={image} alt={product?.title} />
         <h2>{`Title:${title}`}</h2>
         <h4>{`Category:${category}`}</h4>
         <p>{`Description:${description}`}</p>
-        <h3>
+        {/* <h3>
           Rating: {rate} ⭐ ({count} reviews)
-        </h3>
+        </h3> */}
         <h1>{`Price:$${price}`}</h1>
         <Link to="/">
           <svg

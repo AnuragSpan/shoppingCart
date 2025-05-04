@@ -1,26 +1,28 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { handleCheckout } from "../slices/cartSlices";
 
 const Checkout = () => {
-  const ordersSummary = useSelector((state) => state.cart);
-  const orders = ordersSummary.cartItems || [];
-
+  const dispatch = useDispatch();
+  const { orderSummary } = useSelector((state) => state.cart);
   const handleButton = () => {
     toast.success(`Order Placed Successfully`, {
       position: "top-center",
     });
   };
+  const items = localStorage.getItem("checkoutItems");
+  const res = JSON.parse(items) || [];
 
   return (
     <>
       <h4 className="summary-title">Order Summary</h4>
       <div className="summary-container">
-        {orders.length === 0 ? (
+        {res.length === 0 ? (
           <p>No orders yet.</p>
         ) : (
-          orders.map((item) => (
+          res.map((item) => (
             <div className="order-items" key={item.id}>
               <div className="checkout-image">
                 <img src={item.image} alt={item.title} />

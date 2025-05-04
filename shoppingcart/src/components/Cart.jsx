@@ -6,6 +6,7 @@ import {
   removeAll,
   decreaseQuantity,
   increaseQuantity,
+  handleCheckout,
 } from "../slices/cartSlices";
 
 const Cart = () => {
@@ -17,6 +18,9 @@ const Cart = () => {
   const clearAll = () => dispatch(removeAll());
   const handleDecrease = (id) => dispatch(decreaseQuantity(id));
   const handleIncrease = (id) => dispatch(increaseQuantity(id));
+  const handleCheck = (items) => {
+    dispatch(handleCheckout(items));
+  };
   return (
     <div className="cart-container">
       <h2> Shopping Cart</h2>
@@ -58,16 +62,30 @@ const Cart = () => {
                     <img src={items.image} alt={items.title} />
                     <div>
                       <h3>{items.title}</h3>
-                      <button onClick={() => handleRemove(items)}>
+                      <button
+                        className="remove-btn"
+                        onClick={() => handleRemove(items)}
+                      >
                         Remove
                       </button>
                     </div>
                   </div>
                   <div className="cart-product-price">${items.price}</div>
                   <div className="cart-product-quantity">
-                    <button onClick={() => handleDecrease(items.id)}>-</button>
+                    <button
+                      className="decrease-btn"
+                      disabled={items.quantity === 1}
+                      onClick={() => handleDecrease(items.id)}
+                    >
+                      -
+                    </button>
                     <span> {items.quantity}</span>
-                    <button onClick={() => handleIncrease(items.id)}>+</button>
+                    <button
+                      onClick={() => handleIncrease(items.id)}
+                      className="increase-btn"
+                    >
+                      +
+                    </button>
                   </div>
                   <div className="cart-totalPrice">
                     <span> ${items.price * items.quantity}</span>
@@ -78,7 +96,7 @@ const Cart = () => {
           </div>
 
           <div className="cart-summary">
-            <button className="clear-cart" onClick={clearAll}>
+            <button className="clear-cart-btn" onClick={clearAll}>
               Clear Cart
             </button>
             <div className="cart-checkout">
@@ -92,22 +110,14 @@ const Cart = () => {
                 </span>
               </div>
               <p>Taxes and Shipping calculated at checkout page</p>
-              <Link to="/checkout">Checkout</Link>
-              <div className="continue-shopping">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  className="bi bi-arrow-left"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"
-                  />
-                </svg>
-                <span>Continue Shopping</span>
+              <div
+                onClick={() => {
+                  handleCheck(cart.cartItems);
+                }}
+              >
+                <Link className="check-link" to="/checkout">
+                  Checkout
+                </Link>
               </div>
             </div>
           </div>
